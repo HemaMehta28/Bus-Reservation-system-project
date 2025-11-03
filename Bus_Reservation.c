@@ -13,26 +13,46 @@ int ticketNumber = 1;
 int authatication();
 int dashboard();
 int indexx;
+int busChoice;
+int seats;
+int gstAmount;
 
-int Route()
-{
+
+
+int getIntegerInput(char prompt[]) {
+    int input;
+    while (1) {
+        printf("%s", prompt);
+        if (scanf("%d", &input)) {
+            break;
+        } else {
+            printf("Invalid input. Please enter a number.\n");
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+    return input;
+}
+
+
+
+
+int Route() {
     int routeChoice;
     printf("-----------------Menu-------------------\n");
     printf("1. UK to Delhi\n");
     printf("2. UK to Mumbai\n");
-    printf("3. UK to Jammu\n");
+    printf("3. UK to Jammu\n"); 
     printf("4. UK to Bihar\n");
     printf("5. Back to Main Menu\n");
     printf("------------------------------------------\n\n");
-    printf("Enter the route choice: ");
-    scanf("%d", &routeChoice);
+    routeChoice = getIntegerInput("Enter the route choice: ");
     return routeChoice;
 }
 
-
 void printRoute(int routeChoice) 
 {
-    printf("Route:\t\t\t\t ");
+    printf("Route: \t\t\t\t ");
     switch (routeChoice) {
         case 1:
             printf("UK to Delhi\n");
@@ -52,7 +72,7 @@ void printRoute(int routeChoice)
 
 int BookTicket()
  {
-    int busChoice;
+   
     do {
         int routeChoice = Route();
         if (routeChoice >= 1 && routeChoice <= 4)
@@ -61,34 +81,38 @@ int BookTicket()
             for (int i = 0; i < 2; i++) {
                 printf("%d. Bus Number: %d\n", i + 1, busNumber[routeChoice - 1][i]);
             }
-            printf("\nEnter the bus choice: ");
-            scanf("%d", &busChoice);
+            busChoice=getIntegerInput("\nEnter the bus choice: ");
             if (busChoice >= 1 && busChoice <= 2) {
                 printf("\n----------------------------------------------\n");
                 printf("Bus Number: %d\n", busNumber[routeChoice - 1][busChoice - 1]);
                 printf("Price with GST: %d\n", price[routeChoice - 1][busChoice - 1]);
                 printf("Available Seat: %d\n", availableSeat[routeChoice - 1][busChoice - 1]);
                 printf("----------------------------------------------\n");
-                int seats;
-                printf("\nEnter number of seats to book: ");
-                scanf("%d", &seats);
-                if (seats <= availableSeat[routeChoice - 1][busChoice - 1]) 
-                {
-                    availableSeat[routeChoice - 1][busChoice - 1] -= seats;
-                    bookedSeat[routeChoice - 1][busChoice - 1] += seats;
-                    printf("\n-------------------\nSeats booked successfully\n-------------------\n\n");
-                    printf("====================Recipt======================\n");
-                    printf("-------------------Ticket_NO:%d-----------------\n",ticketNumber);
-                    printf("Name:\t\t\t\t %s\n", names[indexx]);
-                    printf("Email:\t\t\t\t %s\n", emails[indexx]);
-                    printf("Bus Number:\t\t\t %d\n", busNumber[routeChoice - 1][busChoice - 1]);
-                    printRoute(routeChoice);
-                    printf("Number of Seats:\t\t %d\n", seats);
-                    printf("Total Price with GST:t\t\t %d\n", seats * price[routeChoice - 1][busChoice - 1]);
-                    printf("================================================\n");
-                } else {
-                    printf("\n----------------------------\nSorry, seats are not available.\n---------------------------\n");
-                }
+                seats=getIntegerInput("\nEnter number of seats to book: ");
+                if (seats <= availableSeat[routeChoice - 1][busChoice - 1]) {
+                availableSeat[routeChoice - 1][busChoice - 1] -= seats;
+                bookedSeat[routeChoice - 1][busChoice - 1] += seats;
+                gstAmount = seats * price[routeChoice - 1][busChoice - 1] * 18 / 100;
+                int totalPrice = seats * price[routeChoice - 1][busChoice - 1] + gstAmount;
+                printf("\n-------------------\nSeats booked successfully\n-------------------\n\n");
+                printf("====================Recipt======================\n");
+                printf("-------------------Ticket_NO:%d-----------------\n", ticketNumber);
+                printf("Name:\t\t\t\t %s\n", names[indexx]);
+                printf("Email:\t\t\t\t %s\n", emails[indexx]);
+                printf("Bus Number:\t\t\t %d\n", busNumber[routeChoice - 1][busChoice - 1]);
+                printRoute(routeChoice);
+                printf("Number of Seats:\t\t %d\n", seats);
+                printf("Price without GST:\t\t %d\n", seats * price[routeChoice - 1][busChoice - 1]);
+                printf("Total Price with GST:\t\t %d\n", totalPrice);
+                printf("================================================\n");
+              ticketNumber++; 
+              return seats;
+              } else 
+              {
+            printf("\n----------------------------\nSorry, seats are not available.\n---------------------------\n");
+               
+        }
+
             } else {
                 printf("\n---------------------------\nInvalid bus choice.\n-------------------------\n");
             }
@@ -97,6 +121,7 @@ int BookTicket()
         } else {
           printf("\n------------------------------\nInvalid choice.\n--------------------------\n");
         }
+        return busChoice;
     } while (1);
     return 0;
 }
@@ -106,8 +131,9 @@ int BookTicket()
 
 int cancelTicket()
  {
-     int busChoice;
+    
      int routeChoice =Route();
+     int seat;
     if (routeChoice >= 1 && routeChoice <= 4) 
     {
         printf("\nBuses available for this route:\n");
@@ -115,33 +141,35 @@ int cancelTicket()
         {
             printf("%d. Bus Number: %d\n", i + 1, busNumber[routeChoice - 1][i]);
         }
-        printf("\n\nEnter the bus choice: ");
-        scanf("%d", &busChoice);
+        busChoice=getIntegerInput("\n\nEnter the bus choice: ");
         if (busChoice == 1|| busChoice == 2) 
         {
              printf("\n----------------------------------------------\n");
             printf("Bus Number:%d\n", busNumber[routeChoice - 1][busChoice - 1]);
             printf("Booked Seat:%d\n", bookedSeat[routeChoice - 1][busChoice - 1]);
              printf("----------------------------------------------\n");
-            int seats;
-            printf("Enter number of seats to cancel: ");
-            scanf("%d", &seats);
+            seats=getIntegerInput("Enter number of seats to cancel: ");
             if (seats <= bookedSeat[routeChoice - 1][busChoice - 1]) 
             {
-                int seat=bookedSeat[routeChoice - 1][busChoice - 1];
+                seat=bookedSeat[routeChoice - 1][busChoice - 1];
                 bookedSeat[routeChoice - 1][busChoice - 1] -= seats;
+                availableSeat[routeChoice - 1][busChoice - 1] += seats;
+                gstAmount = seats * price[routeChoice - 1][busChoice - 1] * 18 / 100;
                 printf("\n--------------------------\nTicket cancelled successfully\n------------------------\n");
-                 printf("\n====================Recipt======================\n");
-                  printf("Name:\t\t\t\t%s\n", names[indexx]);
-                    printf("Email:\t\t\t\t%s\n", emails[indexx]);
-                    printf("Bus Number:\t\t\t%d\n", busNumber[routeChoice - 1][busChoice - 1]);
-                   printRoute(routeChoice);
-                    printf("Booked Seat:\t\t\t%d\n",seat);
-                     printf("Availble Booked Seat:\t\t%d\n", bookedSeat[routeChoice - 1][busChoice - 1]);
-                     printf("Cancel Seat:\t\t\t%d\n",seats);
-                    printf("Refund amount without GST:\t%d\n", seats * price[routeChoice - 1][busChoice - 1]);
+                printf("\n====================Recipt======================\n");
+                printf("Name:\t\t\t\t%s\n", names[indexx]);
+                printf("Email:\t\t\t\t%s\n", emails[indexx]);
+                printf("Bus Number:\t\t\t%d\n", busNumber[routeChoice - 1][busChoice - 1]);
+                printRoute(routeChoice);
+                printf("Booked Seat:\t\t\t%d\n",seat);
+                printf("Cancel Seat:\t\t\t%d\n",seats);
+                
+                printf("Price without GST:\t\t%d\n", seats * price[routeChoice - 1][busChoice - 1]);
+                printf("GST (18%):\t\t\t%d\n", gstAmount);
+                printf("Refund amount:\t\t%d\n", seats * price[routeChoice - 1][busChoice - 1]);
                     
                     printf("\n==================================================\n");
+                     return seats;
             } 
             else 
             {
@@ -158,7 +186,7 @@ int cancelTicket()
     {
         printf("-------------------------------\nInvalid choice.\n---------------------------------\n");
     }
-    return 0;
+    return busChoice;
 }
 
 
@@ -200,8 +228,7 @@ int dashboard ()
         printf("2. Cancel a ticket\n");
         printf("3. Check bus status\n");
         printf("4. Logout\n");
-        printf("\nEnter the choice: ");
-        scanf("%d", &choice);
+        choice= getIntegerInput("\nEnter the choice: ");
         switch (choice) 
         {
             case 1:
@@ -220,7 +247,7 @@ int dashboard ()
                 printf("\n-------------------------------\nInvalid choice.\n-------------------------------\n");
         }
     }
-    return 0;
+    return choice;
 }
 
 
@@ -231,8 +258,7 @@ int authatication()
     do {
         printf("*********************************Signin&Loginin***********************************\n");
         printf("1. Sign Up\n2. Sign In\n3. Exit\n\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
+        choice= getIntegerInput("Enter choice: ");
         switch (choice) {
             case 1:
                 printf("\n\t\t========================== Sign Up======================\n");
@@ -410,7 +436,7 @@ int authatication()
                 printf("\n-------------------\nInvalid choice.\n-------------------\n");
         }
     } while (1);
-    return 0;
+    return choice;
 }
 int main()
 {
