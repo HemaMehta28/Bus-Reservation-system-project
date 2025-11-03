@@ -9,12 +9,10 @@ int price[][2] = {{1000, 1000}, {5000, 5000}, {3000, 3000}, {2000, 2000}};
 int totalSeat[][2] = {{50, 50}, {40, 40}, {50, 50}, {30, 30}};
 int availableSeat[][2] = {{50, 50}, {40, 40}, {50, 50}, {30, 30}};
 int bookedSeat[][2] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}};
-int GST=100;
 int ticketNumber = 1;
-int menu();
-int usermenu();
-int Index;
-
+int authatication();
+int dashboard();
+int indexx;
 
 int Route()
 {
@@ -31,6 +29,25 @@ int Route()
     return routeChoice;
 }
 
+
+void printRoute(int routeChoice) 
+{
+    printf("Route:\t\t\t\t ");
+    switch (routeChoice) {
+        case 1:
+            printf("UK to Delhi\n");
+            break;
+        case 2:
+            printf("UK to Mumbai\n");
+            break;
+        case 3:
+            printf("UK to Jammu\n");
+            break;
+        case 4:
+            printf("UK to Bihar\n");
+            break;
+    }
+}
 
 
 int BookTicket()
@@ -49,7 +66,7 @@ int BookTicket()
             if (busChoice >= 1 && busChoice <= 2) {
                 printf("\n----------------------------------------------\n");
                 printf("Bus Number: %d\n", busNumber[routeChoice - 1][busChoice - 1]);
-                printf("Price with GST: %d\n", GST+price[routeChoice - 1][busChoice - 1]);
+                printf("Price with GST: %d\n", price[routeChoice - 1][busChoice - 1]);
                 printf("Available Seat: %d\n", availableSeat[routeChoice - 1][busChoice - 1]);
                 printf("----------------------------------------------\n");
                 int seats;
@@ -62,27 +79,12 @@ int BookTicket()
                     printf("\n-------------------\nSeats booked successfully\n-------------------\n\n");
                     printf("====================Recipt======================\n");
                     printf("-------------------Ticket_NO:%d-----------------\n",ticketNumber);
-                    printf("Name:\t\t\t\t %s\n", names[Index]);
-                    printf("Email:\t\t\t\t %s\n", emails[Index]);
+                    printf("Name:\t\t\t\t %s\n", names[indexx]);
+                    printf("Email:\t\t\t\t %s\n", emails[indexx]);
                     printf("Bus Number:\t\t\t %d\n", busNumber[routeChoice - 1][busChoice - 1]);
-                    printf("Route:\t\t\t\t ");
-                    switch (routeChoice) 
-                    {
-                        case 1:
-                            printf("UK to Delhi\n");
-                            break;
-                        case 2:
-                            printf("UK to Mumbai\n");
-                            break;
-                        case 3:
-                            printf("UK to Jammu\n");
-                            break;
-                        case 4:
-                            printf("UK to Bihar\n");
-                            break;
-                    }
+                    printRoute(routeChoice);
                     printf("Number of Seats:\t\t %d\n", seats);
-                    printf("Total Price with GST:t\t\t %d\n", seats * price[routeChoice - 1][busChoice - 1]+GST);
+                    printf("Total Price with GST:t\t\t %d\n", seats * price[routeChoice - 1][busChoice - 1]);
                     printf("================================================\n");
                 } else {
                     printf("\n----------------------------\nSorry, seats are not available.\n---------------------------\n");
@@ -91,9 +93,9 @@ int BookTicket()
                 printf("\n---------------------------\nInvalid bus choice.\n-------------------------\n");
             }
         } else if (routeChoice == 5) {
-            usermenu();
+            dashboard();
         } else {
-            printf("\n------------------------------\nInvalid choice.\n--------------------------\n");
+          printf("\n------------------------------\nInvalid choice.\n--------------------------\n");
         }
     } while (1);
     return 0;
@@ -115,7 +117,7 @@ int cancelTicket()
         }
         printf("\n\nEnter the bus choice: ");
         scanf("%d", &busChoice);
-        if (busChoice >= 1 && busChoice <= 2) 
+        if (busChoice == 1|| busChoice == 2) 
         {
              printf("\n----------------------------------------------\n");
             printf("Bus Number:%d\n", busNumber[routeChoice - 1][busChoice - 1]);
@@ -130,25 +132,10 @@ int cancelTicket()
                 bookedSeat[routeChoice - 1][busChoice - 1] -= seats;
                 printf("\n--------------------------\nTicket cancelled successfully\n------------------------\n");
                  printf("\n====================Recipt======================\n");
-                  printf("Name:\t\t\t\t%s\n", names[Index]);
-                    printf("Email:\t\t\t\t%s\n", emails[Index]);
+                  printf("Name:\t\t\t\t%s\n", names[indexx]);
+                    printf("Email:\t\t\t\t%s\n", emails[indexx]);
                     printf("Bus Number:\t\t\t%d\n", busNumber[routeChoice - 1][busChoice - 1]);
-                    printf("Route:\t\t\t\t");
-                    switch (routeChoice) 
-                    {
-                        case 1:
-                            printf("UK to Delhi\n");
-                            break;
-                        case 2:
-                            printf("UK to Mumbai\n");
-                            break;
-                        case 3:
-                            printf("UK to Jammu\n");
-                            break;
-                        case 4:
-                            printf("UK to Bihar\n");
-                            break;
-                    }
+                   printRoute(routeChoice);
                     printf("Booked Seat:\t\t\t%d\n",seat);
                      printf("Availble Booked Seat:\t\t%d\n", bookedSeat[routeChoice - 1][busChoice - 1]);
                      printf("Cancel Seat:\t\t\t%d\n",seats);
@@ -166,7 +153,7 @@ int cancelTicket()
         }
     } else if (routeChoice == 5) 
     {
-        usermenu();
+        dashboard();
     } else 
     {
         printf("-------------------------------\nInvalid choice.\n---------------------------------\n");
@@ -192,7 +179,7 @@ int busStatus()
         }
     } else if (routeChoice == 5) 
     {
-        usermenu();
+        dashboard();
     } else 
     {
         printf("\n---------------------------\nInvalid choice.\n----------------------------\n");
@@ -202,7 +189,8 @@ int busStatus()
 
 
 
-int usermenu() 
+
+int dashboard () 
 {
     int choice;
     while (1) 
@@ -226,7 +214,7 @@ int usermenu()
                 busStatus();
                 break;
             case 4:
-                menu();
+                authatication();
                 return 0;
             default:
                 printf("\n-------------------------------\nInvalid choice.\n-------------------------------\n");
@@ -237,12 +225,12 @@ int usermenu()
 
 
 
-int menu() 
+int authatication() 
 {
     int choice, i, j;
     do {
         printf("*********************************Signin&Loginin***********************************\n");
-        printf("1. Sign in\n2. Login in\n3. Exit\n\n");
+        printf("1. Sign Up\n2. Sign In\n3. Exit\n\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
         switch (choice) {
@@ -347,9 +335,9 @@ int menu()
     }
 }
         Count++;
-        Index = Count - 1;
+        indexx = Count - 1;
         printf("\n------------------------\nSign up successful!\n----------------------\n");
-        usermenu();
+        dashboard();
         break;
           
         case 2:
@@ -377,7 +365,7 @@ int menu()
                 if (match == 1) 
                 {
                     found = 1;
-                    Index = i;
+                    indexx = i;
                     break;
                 }
             }
@@ -392,8 +380,8 @@ int menu()
             printf("please enter the Password: ");
             scanf("%s", password);
             int match2 = 1;
-            for (j = 0; passwords[Index][j] != '\0' || password[j] != '\0'; j++) {
-                if (passwords[Index][j] != password[j]) {
+            for (j = 0; passwords[indexx][j] != '\0' || password[j] != '\0'; j++) {
+                if (passwords[indexx][j] != password[j]) {
                     match2 = 0;
                     break;
                 }
@@ -401,7 +389,7 @@ int menu()
             if (match2 == 1) 
             {
                 printf("\n-------------------\nLogin successful!\n-------------------\n");
-                usermenu();
+                dashboard();
                 return 0;
             } else 
             {
@@ -414,9 +402,9 @@ int menu()
         printf("\n----------------------\nPlease sign in First.\n-------------------------\n");
         break;
     }
-    
-           
-                
+            case 3:
+                printf("\n-------------------\n*****Exit****\n-------------------\n");
+                exit(0);
                
             default:
                 printf("\n-------------------\nInvalid choice.\n-------------------\n");
@@ -424,10 +412,8 @@ int menu()
     } while (1);
     return 0;
 }
-
-
 int main()
 {
-    menu();
+    authatication();
     return 0;
 }
